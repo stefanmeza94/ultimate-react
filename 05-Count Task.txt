@@ -1,0 +1,47 @@
+import { useState } from "react";
+import "./styles.css";
+
+export default function App() {
+  const [step, setStep] = useState(1);
+  const [count, setCount] = useState(0);
+
+  const date = new Date("August 28 2023");
+  date.setDate(date.getDate() + count);
+
+  function handleReset() {
+    setStep(1);
+    setCount(0);
+  }
+
+  return (
+    <div className="App">
+      <div>
+        <input
+          type="range"
+          value={step}
+          onChange={(e) => setStep(Number(e.target.value))}
+          max={10}
+          min={1}
+        />
+        <span>{step}</span>
+      </div>
+      <div>
+        <button onClick={() => setCount((c) => c - step)}>-</button>
+        <input
+          type="text"
+          value={count}
+          onChange={(e) => setCount(Number(e.target.value))}
+        />
+        <button onClick={() => setCount((c) => c + step)}>+</button>
+      </div>
+      <p>
+        {count === 0
+          ? `Today is ${date.toDateString()}`
+          : count > 0
+          ? `${count} days from today is ${date.toDateString()}`
+          : `${Math.abs(count)} days before today is ${date.toDateString()}`}
+      </p>
+      {(step > 1 || count > 0) && <button onClick={handleReset}>Reset</button>}
+    </div>
+  );
+}

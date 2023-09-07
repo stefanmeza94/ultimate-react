@@ -48,4 +48,4 @@ export default function App() {
   );
 }
 
-// nastavi od accordion component app exercise
+// nastavi od children prop: making a reusable button

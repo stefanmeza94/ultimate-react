@@ -31,5 +31,3 @@ export default function App() {
     </>
   );
 }
-
-// natavi od 115. Building a Reusable Star Rating Component

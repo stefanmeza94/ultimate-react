@@ -11,8 +11,7 @@ import WatchedMoviesList from "./components/WatchedMoviesList";
 import Loader from "./components/Loader";
 import ErrorMessage from "./components/ErrorMessage";
 import MovieDetails from "./components/MovieDetails";
-
-const KEY = "a01bbe3f";
+import { KEY } from "./constants";
 
 export default function App() {
   const [query, setQuery] = useState("");

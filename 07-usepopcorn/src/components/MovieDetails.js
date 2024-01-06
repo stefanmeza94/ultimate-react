@@ -53,6 +53,13 @@ export default function MovieDetails({ selectedId, onCloseMovie, onAddWatched, w
     [selectedId]
   );
 
+  useEffect(() => {
+    if (!title) return;
+    document.title = `MOVIE | ${title}`;
+
+    // return () => (document.title = "usePopcorn");
+  }, [title]);
+
   return (
     <div className="details">
       {isLoading ? (

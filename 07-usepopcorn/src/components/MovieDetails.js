@@ -50,15 +50,22 @@ export default function MovieDetails({ selectedId, onCloseMovie, onAddWatched, w
 
       fetchMovie();
     },
+
     [selectedId]
   );
 
-  useEffect(() => {
-    if (!title) return;
-    document.title = `MOVIE | ${title}`;
+  console.log(title);
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `MOVIE | ${title}`;
 
-    // return () => (document.title = "usePopcorn");
-  }, [title]);
+      return function () {
+        document.title = "usePopcorn";
+      };
+    },
+    [title]
+  );
 
   return (
     <div className="details">

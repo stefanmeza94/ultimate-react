@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Main from './components/Main';
-import Search from './components/Serach';
+import Search from './components/Search';
 import Results from './components/Result';
 import MovieList from './components/MovieList';
 import Box from './components/Box';

@@ -1,33 +1,66 @@
-import React from "react";
+import React from 'react';
+import Weather from './Weather';
+import { convertToFlag } from './helpers';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      location: "lisabon",
+      location: 'lisbon',
+      isLoading: false,
+      displayLocation: '',
+      weather: {},
     };
     this.fetchWeather = this.fetchWeather.bind(this);
   }
 
-  fetchWeather() {
-    console.log("Loading data...");
-    console.log(this);
+  async fetchWeather() {
+    try {
+      this.setState({ isLoading: true });
+      // 1) Getting location (geocoding)
+      const geoRes = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${this.state.location}`
+      );
+      const geoData = await geoRes.json();
+      console.log(geoData);
+
+      if (!geoData.results) throw new Error('Location not found');
+
+      const { latitude, longitude, timezone, name, country_code } = geoData.results.at(0);
+      this.setState({ displayLocation: `${name} ${convertToFlag(country_code)}` });
+
+      // 2) Getting actual weather
+      const weatherRes = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&timezone=${timezone}&daily=weathercode,temperature_2m_max,temperature_2m_min`
+      );
+      const weatherData = await weatherRes.json();
+
+      this.setState({ weather: weatherData.daily });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      this.setState({ isLoading: false });
+    }
   }
 
   render() {
     return (
-      <div className="app">
+      <div className='app'>
         <h1>Classy Weather</h1>
         <div>
           <input
-            type="text"
-            placeholder="Search from location..."
+            type='text'
+            placeholder='Search from location...'
             value={this.state.location}
             onChange={(e) => this.setState({ location: e.target.value })}
           />
         </div>
         <button onClick={this.fetchWeather}>Get weather</button>
+        {this.state.isLoading && <p className='loader'>Loading...</p>}
+        {this.state.weather.weathercode && (
+          <Weather weather={this.state.weather} location={this.state.displayLocation} />
+        )}
       </div>
     );
   }
@@ -35,4 +68,4 @@ class App extends React.Component {
 
 export default App;
 
-// nastavi od 179. Fetching Weather Data
+// nastavi od 181. Removing Boilerplate Code With Class Fields

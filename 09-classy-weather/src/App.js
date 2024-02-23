@@ -1,4 +1,6 @@
 import React from "react";
+import Weather from "./Weather";
+import { convertToFlag } from "./helpers";
 
 function getWeatherIcon(wmoCode) {
   const icons = new Map([
@@ -37,7 +39,10 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      location: "lisabon",
+      location: "lisbon",
+      isLoading: false,
+      displayLocation: "",
+      weather: {},
     };
     this.fetchWeather = this.fetchWeather.bind(this);
   }
@@ -90,6 +95,13 @@ class App extends React.Component {
           />
         </div>
         <button onClick={this.fetchWeather}>Get weather</button>
+        {this.state.isLoading && <p className="loader">Loading...</p>}
+        {this.state.weather.weathercode && (
+          <Weather
+            weather={this.state.weather}
+            location={this.state.displayLocation}
+          />
+        )}
       </div>
     );
   }

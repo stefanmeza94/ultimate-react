@@ -1,15 +1,25 @@
 export default function Options({ question, dispatch, answer }) {
   const hasAnswer = answer !== null;
+
   return (
-    <div className='options'>
+    <div className="options">
       {question.options.map((option, index) => (
         <button
-          className={`btn btn-option ${index === answer ? 'answer' : ''} ${
-            hasAnswer ? (index === question.correctOption ? 'correct' : 'wrong') : ''
+          className={`btn btn-option ${index === answer ? "answer" : ""} ${
+            hasAnswer
+              ? index === question.correctOption
+                ? "correct"
+                : "wrong"
+              : ""
           }`}
           key={option}
           disabled={hasAnswer}
-          onClick={() => dispatch({ type: 'newAnswer', payload: index })}
+          onClick={() =>
+            dispatch({
+              type: "newAnswer",
+              payload: index,
+            })
+          }
         >
           {option}
         </button>
@@ -17,5 +27,3 @@ export default function Options({ question, dispatch, answer }) {
     </div>
   );
 }
-
-// nastavi od 195. Handling New Answers - 11:20

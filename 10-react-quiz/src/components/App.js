@@ -7,6 +7,7 @@ import StartScreen from './StartScreen';
 import Question from './Question';
 import NextButton from './NextButton';
 import Progress from './Progress';
+import FinishScreen from './FinishScreen';
 
 const initialState = {
   questions: [],
@@ -25,6 +26,7 @@ const reducer = (state, action) => {
     case 'start':
       return { ...state, status: 'active' };
     case 'newAnswer':
+      console.log(action.payload);
       const question = state.questions.at(state.index);
       return {
         ...state,
@@ -33,6 +35,8 @@ const reducer = (state, action) => {
       };
     case 'nextQuestion':
       return { ...state, index: state.index + 1, answer: null };
+    case 'finish':
+      return { ...state, status: 'finished' };
     default:
       throw new Error('Unknown action: ' + action.type);
   }
@@ -75,12 +79,13 @@ export default function App() {
               answer={answer}
             />
             <Question question={questions[index]} dispatch={dispatch} answer={answer} />
-            <NextButton dispatch={dispatch} answer={answer} />
+            <NextButton dispatch={dispatch} answer={answer} index={index} numQuestions={numQuestions} />
           </>
         )}
+        {status === 'finished' && <FinishScreen points={points} maxPossiblePoints={maxPossiblePoints} />}
       </Main>
     </div>
   );
 }
 
-// nastavi od finishing the quiz
+// nastavi od Finishing the Quiz - 11:00

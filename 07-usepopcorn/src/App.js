@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Main from "./components/Main";
 import Search from "./components/Search";
@@ -6,62 +6,39 @@ import Results from "./components/Result";
 import MovieList from "./components/MovieList";
 import Box from "./components/Box";
 import WatchedSummery from "./components/WatchedSummery";
-import WatchedMoviesList from "./components/WatchedMoviesList";
 import Loader from "./components/Loader";
-import ErrorMessage from "./components/ErrorMessage";
-import MovieDetails from "./components/MovieDetails";
-import { useMovies } from "./hooks/useMovies";
-import { useLocalStorageState } from "./hooks/useLocalStorageState";
+import { KEY } from "./constants";
 
 export default function App() {
-  const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { movies, isLoading, error } = useMovies(query);
-  const [watched, setWatched] = useLocalStorageState([], "watched");
+  const query = "interstellar";
 
-  function handleSelectMovie(id) {
-    setSelectedId((selectedId) => (id === selectedId ? null : id));
-  }
+  useEffect(function () {
+    async function fetchMovies() {
+      setIsLoading(true);
+      const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`);
+      const data = await response.json();
 
-  function handleCloseMovie() {
-    setSelectedId(null);
-  }
+      setMovies(data.Search);
+      setIsLoading(false);
+    }
 
-  function handleAddWatched(movie) {
-    setWatched((watched) => [...watched, movie]);
-  }
-
-  function handleDeleteWatched(id) {
-    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
-  }
+    fetchMovies();
+  }, []);
 
   return (
     <>
       <Navbar>
-        <Search query={query} setQuery={setQuery} />
+        <Search />
         <Results movies={movies} />
       </Navbar>
       <Main>
+        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
         <Box>
-          {isLoading && <Loader />}
-          {!isLoading && !error && <MovieList movies={movies} onSelectMovie={handleSelectMovie} />}
-          {error && <ErrorMessage message={error} />}
-        </Box>
-        <Box>
-          {selectedId ? (
-            <MovieDetails
-              selectedId={selectedId}
-              onCloseMovie={handleCloseMovie}
-              onAddWatched={handleAddWatched}
-              watched={watched}
-            />
-          ) : (
-            <>
-              <WatchedSummery watched={watched} />
-              <WatchedMoviesList watched={watched} onDeleteWatched={handleDeleteWatched} />
-            </>
-          )}
+          <WatchedSummery watched={watched} />
         </Box>
       </Main>
     </>

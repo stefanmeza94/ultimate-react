@@ -9,42 +9,53 @@ import WatchedSummery from "./components/WatchedSummery";
 import Loader from "./components/Loader";
 import { KEY } from "./constants";
 import ErrorMessage from "./components/ErrorMessage";
+import useDebounce from "./hooks/useDebounce";
 
 export default function App() {
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setIsError] = useState("");
+  const [error, setError] = useState("");
 
-  const query = "antman";
+  const debouncedQuery = useDebounce(query, 300);
 
-  useEffect(function () {
-    async function fetchMovies() {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`);
+  useEffect(
+    function () {
+      async function fetchMovies() {
+        try {
+          setError("");
+          setIsLoading(true);
+          const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${debouncedQuery}`);
 
-        if (!response.ok) throw new Error("Something went wrong with fetching movies!");
+          if (!response.ok) throw new Error("Something went wrong with fetching movies!");
 
-        const data = await response.json();
+          const data = await response.json();
 
-        if (data.Response === "False") throw new Error("Movie not found!");
+          if (data.Response === "False") throw new Error("Movie not found!");
 
-        setMovies(data.Search);
-      } catch (error) {
-        setIsError(error.message);
-      } finally {
-        setIsLoading(false);
+          setMovies(data.Search);
+        } catch (error) {
+          setError(error.message);
+        } finally {
+          setIsLoading(false);
+        }
       }
-    }
 
-    fetchMovies();
-  }, []);
+      if (debouncedQuery.length < 3) {
+        setMovies([]);
+        setError("");
+        return;
+      }
+      fetchMovies();
+    },
+    [debouncedQuery]
+  );
 
   return (
     <>
       <Navbar>
-        <Search />
+        <Search query={query} setQuery={setQuery} />
         <Results movies={movies} />
       </Navbar>
       <Main>

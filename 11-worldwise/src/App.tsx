@@ -18,5 +18,3 @@ const App = () => {
 };
 
 export default App;
-
-// 207 - linking between routes

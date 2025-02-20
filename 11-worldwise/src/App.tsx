@@ -9,6 +9,7 @@ import PageNotFound from "./pages/PageNotFound";
 import CityList from "./components/CityList";
 import CountriesList from "./components/CountryList";
 import City from "./components/City";
+import Form from "./components/Form";
 
 export type City = {
   cityName: string;
@@ -58,7 +59,7 @@ const App = () => {
           <Route path="cities" element={<CityList cities={cities} isLoading={isLoading} />} />
           <Route path="cities/:id" element={<City />} />
           <Route path="countries" element={<CountriesList cities={cities} isLoading={isLoading} />} />
-          <Route path="form" element={<p>form</p>} />
+          <Route path="form" element={<Form />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>

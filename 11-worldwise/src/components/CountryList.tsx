@@ -34,5 +34,3 @@ const CountryList = ({ cities, isLoading }: CountryListProps) => {
 };
 
 export default CountryList;
-
-// 215 - storying state in url

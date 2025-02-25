@@ -3,18 +3,16 @@ import { City } from "../App";
 import Spinner from "./Spinner";
 import CountryItem from "./CountryItem";
 import Message from "./Message";
-
-type CountryListProps = {
-  cities: City[];
-  isLoading: boolean;
-};
+import { useCities } from "../contexts/CitiesContext";
 
 export type Country = { country: string; emoji: string };
 
-const CountryList = ({ cities, isLoading }: CountryListProps) => {
+const CountryList = () => {
+  const { isLoading, cities } = useCities();
+
   if (isLoading) return <Spinner />;
 
-  if (!cities.length) return <Message message="Add your first city by clicking on the city on the map" />;
+  if (!cities?.length) return <Message message="Add your first city by clicking on the city on the map" />;
 
   const countries = cities.reduce((arr: any, city: City) => {
     if (!arr.map((el: City) => el.country).includes(city.country)) {

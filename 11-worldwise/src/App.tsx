@@ -48,5 +48,3 @@ const App = () => {
 };
 
 export default App;
-
-// 230 - Including a map with the leaflet library
